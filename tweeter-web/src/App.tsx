@@ -11,9 +11,14 @@ import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
-import { AuthToken, User, FakeData, Status } from "tweeter-shared";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { useUserInfo } from "./components/userInfo/UserInfoHooks";
+import { UserItemView } from "./presenter/UserItemPresenter";
+import { FolloweePresenter } from "./presenter/FolloweePresenter";
+import { FollowerPresenter } from "./presenter/FollowerPresenter";
+import { StatusItemView } from "./presenter/StatusItemPresenter";
+import { FeedPresenter } from "./presenter/FeedPresenter";
+import { StoryPresenter } from "./presenter/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -38,47 +43,6 @@ const App = () => {
 
 const AuthenticatedRoutes = () => {
   const { displayedUser } = useUserInfo();
-  const loadMoreFollowees = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: User | null,
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
-  };
-
-  const loadMoreFollowers = async (
-    // need to fix this as well for both
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: User | null,
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
-  };
-
-  const loadMoreStoryItems = async (
-    //need to fix this part
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
 
   return (
     <Routes>
@@ -92,9 +56,12 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               //maybe add the key to this at some later point if not rendering correctly
-              itemDesriptor="feed"
+              // itemDesriptor="feed"
               featureUrl="/feed"
-              loadMore={loadMoreFeedItems}
+              // loadMore={loadMoreFeedItems}
+              presenterFactory={(view: StatusItemView) =>
+                new FeedPresenter(view)
+              }
             />
           }
         />
@@ -103,9 +70,12 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               //maybe add the key here as well idk
-              itemDesriptor="story"
+              // itemDesriptor="story"
               featureUrl="/story"
-              loadMore={loadMoreStoryItems}
+              // loadMore={loadMoreStoryItems}
+              presenterFactory={(view: StatusItemView) =>
+                new StoryPresenter(view)
+              }
             />
           }
         />
@@ -115,9 +85,10 @@ const AuthenticatedRoutes = () => {
           element={
             <UserItemScroller
               key={`followees-${displayedUser!.alias}`}
-              itemDescription="followees"
               featureUrl="/followees"
-              loadMore={loadMoreFollowees}
+              presenterFactory={(view: UserItemView) =>
+                new FolloweePresenter(view)
+              }
             />
           }
         />
@@ -126,9 +97,10 @@ const AuthenticatedRoutes = () => {
           element={
             <UserItemScroller
               key={`followers-${displayedUser!.alias}`}
-              itemDescription="followers"
               featureUrl="/followers"
-              loadMore={loadMoreFollowers}
+              presenterFactory={(view: UserItemView) =>
+                new FollowerPresenter(view)
+              }
             />
           }
         />
