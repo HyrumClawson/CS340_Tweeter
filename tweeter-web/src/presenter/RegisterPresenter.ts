@@ -1,9 +1,12 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model.service/model.service/UserService";
+import { Buffer } from "buffer";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface RegisterView {
-  setIsLoading: (value: boolean) => void;
-  displayErrorMessage: (message: string) => void;
+export interface RegisterView extends AuthenticationView {
   successOnRegister: (
     user: User,
     authToken: AuthToken,
@@ -11,13 +14,12 @@ export interface RegisterView {
   ) => void;
 }
 
-export class RegisterPresenter {
+export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
   private service: UserService;
-  private _view: RegisterView;
 
   public constructor(view: RegisterView) {
+    super(view);
     this.service = new UserService();
-    this._view = view;
   }
 
   public checkSubmitButtonStatus(
@@ -51,28 +53,31 @@ export class RegisterPresenter {
     imageFileExtension: string,
     rememberMe: boolean,
   ) {
-    try {
-      this._view.setIsLoading(true);
+    await this.doAuthenticationOperation(
+      () =>
+        this.service.register(
+          firstName,
+          lastName,
+          alias,
+          password,
+          imageBytes,
+          imageFileExtension,
+        ),
+      (user, authToken) =>
+        this.view.successOnRegister(user, authToken, rememberMe),
+      "register user",
+    );
+  }
 
-      const [user, authToken] = await this.service.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension,
-      );
+  public convertImageToBytes(imageStringBase64: string): Uint8Array {
+    // Remove unnecessary file metadata from the start of the string.
+    const imageStringBase64BufferContents =
+      imageStringBase64.split("base64,")[1];
 
-      this._view.successOnRegister(user, authToken, rememberMe);
-
-      //   updateUserInfo(user, user, authToken, rememberMe);
-      //   navigate(`/feed/${user.alias}`);
-    } catch (error) {
-      this._view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`,
-      );
-    } finally {
-      this._view.setIsLoading(false);
-    }
+    const bytes: Uint8Array = Buffer.from(
+      imageStringBase64BufferContents,
+      "base64",
+    );
+    return bytes;
   }
 }

@@ -5,9 +5,9 @@ import { AuthToken, User } from "tweeter-shared";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "./UserInfoHooks";
 import {
-  FollowingPresenter,
-  FollowingView,
-} from "../../presenter/FollowingPresenter";
+  UserInfoPresenter,
+  UserInfoView,
+} from "../../presenter/UserInfoPresenter";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -23,7 +23,7 @@ const UserInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const listener: FollowingView = {
+  const listener: UserInfoView = {
     setIsFollower: setIsFollower,
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
@@ -33,9 +33,9 @@ const UserInfo = () => {
     setIsLoading: setIsLoading,
   };
 
-  const presenterRef = useRef<FollowingPresenter | null>(null);
+  const presenterRef = useRef<UserInfoPresenter | null>(null);
   if (!presenterRef.current) {
-    presenterRef.current = new FollowingPresenter(listener);
+    presenterRef.current = new UserInfoPresenter(listener);
   }
 
   if (!displayedUser) {
@@ -69,7 +69,7 @@ const UserInfo = () => {
     event: React.MouseEvent,
   ): Promise<void> => {
     event.preventDefault();
-    presenterRef.current!.followDisplayedUser(displayedUser, authToken); // add arguments
+    presenterRef.current!.followDisplayedUser(displayedUser!, authToken); // add arguments
   };
 
   const unfollowDisplayedUser = async (

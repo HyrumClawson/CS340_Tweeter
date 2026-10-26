@@ -81,13 +81,8 @@ const Register = () => {
         const imageStringBase64 = event.target?.result as string;
 
         // Remove unnecessary file metadata from the start of the string.
-        const imageStringBase64BufferContents =
-          imageStringBase64.split("base64,")[1];
-
-        const bytes: Uint8Array = Buffer.from(
-          imageStringBase64BufferContents,
-          "base64",
-        );
+        const bytes =
+          presenterRef.current!.convertImageToBytes(imageStringBase64);
 
         setImageBytes(bytes);
       };

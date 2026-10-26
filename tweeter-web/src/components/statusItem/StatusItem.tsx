@@ -7,7 +7,7 @@ import { useUserNavigation } from "../hooks/NavigationHooks";
 
 interface Props {
   status: Status;
-  featurUrl: string; // specifies either story or feed
+  featureUrl: string; // specifies either story or feed
 }
 const StatusItem = (props: Props) => {
   return (
@@ -29,15 +29,15 @@ const StatusItem = (props: Props) => {
               </b>{" "}
               -{" "}
               <Link
-                to={`${props.featurUrl}/${props.status.user.alias}`}
-                onClick={useUserNavigation(props.featurUrl)}
+                to={`${props.featureUrl}/${props.status.user.alias}`}
+                onClick={useUserNavigation(props.featureUrl)}
               >
                 {props.status.user.alias}
               </Link>
             </h2>
             {props.status.formattedDate}
             <br />
-            <Post status={props.status} featurePath={`${props.featurUrl}`} />
+            <Post status={props.status} featurePath={`${props.featureUrl}`} />
           </div>
         </div>
       </div>
