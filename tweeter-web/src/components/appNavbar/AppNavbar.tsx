@@ -5,8 +5,11 @@ import Image from "react-bootstrap/Image";
 import { AuthToken } from "tweeter-shared";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
-import { LogoutPresenter, LogoutView } from "../../presenter/LogoutPresenter";
 import { useRef } from "react";
+import {
+  AppNavBarPresenter,
+  AppNavBarView,
+} from "../../presenter/AppNavBarPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();
@@ -16,16 +19,16 @@ const AppNavbar = () => {
   const { displayInfoMessage, displayErrorMessage, deleteMessage } =
     useMessageActions();
 
-  const listener: LogoutView = {
+  const listener: AppNavBarView = {
     displayInfoMessage: displayInfoMessage,
     deleteMessage: deleteMessage,
     clearUserInfo: clearUserInfo,
     navigate: navigate,
     displayErrorMessage: displayErrorMessage,
   };
-  const presenterRef = useRef<LogoutPresenter | null>(null);
+  const presenterRef = useRef<AppNavBarPresenter | null>(null);
   if (!presenterRef.current) {
-    presenterRef.current = new LogoutPresenter(listener);
+    presenterRef.current = new AppNavBarPresenter(listener);
   }
 
   return (

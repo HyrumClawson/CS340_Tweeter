@@ -8,12 +8,15 @@ export interface PostStatusView extends MessageView {
 }
 
 export class PostStatusPresenter extends Presenter<PostStatusView> {
-  private service: StatusService;
+  private _service: StatusService;
 
   public constructor(view: PostStatusView) {
     super(view);
-    this.service = new StatusService();
+    this._service = new StatusService();
   }
+  public get service() {
+    return this._service;
+  } //added for test to use with spy
 
   public checkButtonStatus(
     post: string,

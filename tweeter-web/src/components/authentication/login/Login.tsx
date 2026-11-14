@@ -10,6 +10,7 @@ import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -38,7 +39,7 @@ const Login = (props: Props) => {
   //might need to do something similar with the listener as well so no stale data
   const presenterRef = useRef<LoginPresenter | null>(null);
   if (!presenterRef.current) {
-    presenterRef.current = new LoginPresenter(listener); // causing infinite loop
+    presenterRef.current = props.presenter ?? new LoginPresenter(listener); // causing infinite loop
   }
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {

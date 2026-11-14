@@ -14,6 +14,7 @@ const AuthenticationFields = (props: Props) => {
           className="form-control"
           size={50}
           id="aliasInput"
+          aria-label="alias"
           placeholder="name@example.com"
           onKeyDown={props.registerOrLogin} // this will be different between login and register
           onChange={(event) => props.setAlias(event.target.value)}
@@ -26,6 +27,7 @@ const AuthenticationFields = (props: Props) => {
           type="password"
           className="form-control"
           id="passwordInput"
+          aria-label="password"
           placeholder="Password"
           onKeyDown={props.registerOrLogin} // this as well
           onChange={(event) => props.setPassword(event.target.value)}

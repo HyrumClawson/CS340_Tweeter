@@ -2,17 +2,21 @@ import { AuthToken } from "tweeter-shared";
 import { UserService } from "../model.service/model.service/UserService";
 import { MessageView, Presenter } from "./Presenter";
 
-export interface LogoutView extends MessageView {
+export interface AppNavBarView extends MessageView {
   clearUserInfo: () => void;
   navigate: (path: string) => void;
 }
-export class LogoutPresenter extends Presenter<LogoutView> {
-  private service: UserService;
+export class AppNavBarPresenter extends Presenter<AppNavBarView> {
+  private _service: UserService;
 
-  public constructor(view: LogoutView) {
+  public constructor(view: AppNavBarView) {
     super(view);
-    this.service = new UserService();
+    this._service = new UserService();
   }
+
+  public get service() {
+    return this._service;
+  } //added for test to use with spy
 
   public async logOut(authToken: AuthToken | null) {
     const loggingOutToastId = this.view.displayInfoMessage("Logging Out...", 0);
