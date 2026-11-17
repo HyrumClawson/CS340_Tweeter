@@ -1,5 +1,5 @@
 import { User, AuthToken } from "tweeter-shared";
-import { UserService } from "../model.service/model.service/UserService";
+import { UserService } from "../model/service/UserService";
 import {
   AuthenticationPresenter,
   AuthenticationView,

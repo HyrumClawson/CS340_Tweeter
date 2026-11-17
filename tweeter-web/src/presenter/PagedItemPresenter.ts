@@ -1,7 +1,7 @@
 import { AuthToken, User } from "tweeter-shared";
 import { Presenter, View } from "./Presenter";
-import { UserService } from "../model.service/model.service/UserService";
-import { Service } from "../model.service/model.service/Service";
+import { UserService } from "../model/service/UserService";
+import { Service } from "../model/service/Service";
 export const PAGE_SIZE = 10;
 
 export interface PagedItemView<T> extends View {

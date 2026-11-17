@@ -7,7 +7,7 @@ import {
   verify,
   when,
 } from "@typestrong/ts-mockito";
-import { StatusService } from "../../src/model.service/model.service/StatusService";
+import { StatusService } from "../../src/model/service/StatusService";
 import {
   PostStatusPresenter,
   PostStatusView,
