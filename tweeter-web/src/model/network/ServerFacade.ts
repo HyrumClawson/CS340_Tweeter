@@ -1,10 +1,13 @@
 import {
+  AuthResponse,
+  AuthToken,
   FollowActionRequest,
   FollowActionResponse,
   FollowCountRequest,
   FollowCountResponse,
   IsFollowerRequest,
   IsFollowerResponse,
+  LoginRequest,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
@@ -170,6 +173,29 @@ export class ServerFacade {
         throw new Error(`the server did not return both counts`);
       } else {
         return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async login(
+    request: LoginRequest,
+  ): Promise<[user: User, authToken: AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      AuthResponse
+    >(request, "/user/login");
+
+    // Handle errors
+    if (response.success) {
+      const user = User.fromDto(response.user);
+      const authToken = AuthToken.fromDto(response.authToken);
+      if (user === null || authToken === null) {
+        throw new Error(`could not login`);
+      } else {
+        return [user, authToken];
       }
     } else {
       console.error(response);
