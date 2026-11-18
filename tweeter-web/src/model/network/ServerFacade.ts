@@ -5,6 +5,8 @@ import {
   FollowActionResponse,
   FollowCountRequest,
   FollowCountResponse,
+  GetUserRequest,
+  GetUserResponse,
   IsFollowerRequest,
   IsFollowerResponse,
   LoginRequest,
@@ -237,6 +239,27 @@ export class ServerFacade {
 
     // Handle errors
     if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getUser(request: GetUserRequest): Promise<User | null> {
+    //a user basically
+    const response = await this.clientCommunicator.doPost<
+      GetUserRequest,
+      GetUserResponse
+    >(request, "/user/get");
+
+    // Handle errors
+    if (response.success) {
+      const user = User.fromDto(response.user);
+      if (user === null) {
+        throw new Error(`invalid user alias`);
+      } else {
+        return user;
+      }
+    } else {
       console.error(response);
       throw new Error(response.message ?? undefined);
     }
