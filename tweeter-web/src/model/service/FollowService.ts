@@ -80,7 +80,12 @@ export class FollowService implements Service {
     selectedUser: User,
   ): Promise<boolean> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    // return FakeData.instance.isFollower();
+    return this.serverFacade.getIsFollower({
+      token: authToken.token,
+      user: user.dto,
+      selectedUser: selectedUser.dto,
+    });
   }
   public async getFolloweeCount(
     authToken: AuthToken,

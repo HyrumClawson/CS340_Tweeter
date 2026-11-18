@@ -1,6 +1,8 @@
 import {
   FollowCountRequest,
   FollowCountResponse,
+  IsFollowerRequest,
+  IsFollowerResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
@@ -99,6 +101,25 @@ export class ServerFacade {
         throw new Error(`No count was found`);
       } else {
         return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getIsFollower(request: IsFollowerRequest): Promise<boolean> {
+    const response = await this.clientCommunicator.doPost<
+      IsFollowerRequest,
+      IsFollowerResponse
+    >(request, "/follower/status");
+
+    // Handle errors
+    if (response.success) {
+      if (response.isFollower == null) {
+        throw new Error(`Couldn't find out if following`);
+      } else {
+        return response.isFollower;
       }
     } else {
       console.error(response);
