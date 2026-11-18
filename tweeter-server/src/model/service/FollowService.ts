@@ -52,43 +52,34 @@ export class FollowService implements Service {
   // }
 
   public async follow(
-    authToken: AuthToken,
-    userToFollow: User,
+    token: string,
+    userToFollow: UserDto,
   ): Promise<[followerCount: number, followeeCount: number]> {
     // Pause so we can see the follow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
 
     // TODO: Call the server
 
-    const followerCount = await this.getFollowerCount(
-      authToken.token,
-      userToFollow.dto,
-    );
+    const followerCount = await this.getFollowerCount(token, userToFollow);
     const followeeCount = await this.getFolloweeCount(
-      authToken.token,
-      userToFollow.dto, //I've edited this while chanigng the count stuff
+      token,
+      userToFollow, //I've edited this while chanigng the count stuff
     );
 
     return [followerCount, followeeCount];
   }
 
   public async unfollow(
-    authToken: AuthToken,
-    userToUnfollow: User,
+    token: string,
+    userToUnfollow: UserDto,
   ): Promise<[followerCount: number, followeeCount: number]> {
     // Pause so we can see the unfollow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
 
     // TODO: Call the server
 
-    const followerCount = await this.getFollowerCount(
-      authToken.token,
-      userToUnfollow.dto,
-    );
-    const followeeCount = await this.getFolloweeCount(
-      authToken.token,
-      userToUnfollow.dto,
-    );
+    const followerCount = await this.getFollowerCount(token, userToUnfollow);
+    const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
 
     return [followerCount, followeeCount];
   }
