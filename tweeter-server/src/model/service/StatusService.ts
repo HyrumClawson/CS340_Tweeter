@@ -4,23 +4,35 @@ import { Service } from "./Service";
 export class StatusService implements Service {
   public async loadMoreStoryItems(
     //need to fix this part
-    authToken: AuthToken,
+    token: string,
     userAlias: string,
     pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> {
+    lastItem: StatusDto | null,
+  ): Promise<[StatusDto[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.getStatusPage(pageSize, lastItem); //FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   }
 
   public async loadMoreFeedItems(
-    authToken: AuthToken,
+    token: string,
     userAlias: string,
     pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> {
+    lastItem: StatusDto | null,
+  ): Promise<[StatusDto[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.getStatusPage(pageSize, lastItem); //FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+  }
+  private getStatusPage(
+    pageSize: number,
+    lastItem: StatusDto | null,
+  ): [StatusDto[], boolean] {
+    const lastStatus = Status.fromDto(lastItem);
+    const [statuses, hasMore] = FakeData.instance.getPageOfStatuses(
+      lastStatus,
+      pageSize,
+    );
+
+    return [statuses.map((status) => status.dto), hasMore];
   }
 
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
