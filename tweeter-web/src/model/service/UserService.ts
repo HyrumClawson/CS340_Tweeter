@@ -44,14 +44,25 @@ export class UserService implements Service {
     const imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
+    const [user, authToken] = await this.serverFacade.register({
+      firstName: firstName,
+      lastName: lastName,
+      alias: alias,
+      password: password,
+      imageStringBase64: imageStringBase64,
+      imageFileExtension: imageFileExtension,
+    });
+
+    return [user, authToken];
+
     // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    // const user = FakeData.instance.firstUser;
 
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
+    // if (user === null) {
+    //   throw new Error("Invalid registration");
+    // }
 
-    return [user, FakeData.instance.authToken];
+    // return [user, FakeData.instance.authToken];
   }
 
   public async logout(authToken: AuthToken): Promise<void> {

@@ -10,6 +10,7 @@ import {
   LoginRequest,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  RegisterRequest,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -194,6 +195,29 @@ export class ServerFacade {
       const authToken = AuthToken.fromDto(response.authToken);
       if (user === null || authToken === null) {
         throw new Error(`could not login`);
+      } else {
+        return [user, authToken];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async register(
+    request: RegisterRequest,
+  ): Promise<[user: User, authToken: AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      AuthResponse
+    >(request, "/user/register");
+
+    // Handle errors
+    if (response.success) {
+      const user = User.fromDto(response.user);
+      const authToken = AuthToken.fromDto(response.authToken);
+      if (user === null || authToken === null) {
+        throw new Error(`could not register`);
       } else {
         return [user, authToken];
       }
