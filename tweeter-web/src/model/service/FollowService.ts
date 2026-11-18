@@ -43,14 +43,13 @@ export class FollowService implements Service {
     userToFollow: User,
   ): Promise<[followerCount: number, followeeCount: number]> {
     // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    // await new Promise((f) => setTimeout(f, 2000));
 
     // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
-
-    return [followerCount, followeeCount];
+    return this.serverFacade.follow({
+      token: authToken.token,
+      targetUser: userToFollow.dto,
+    });
   }
 
   public async unfollow(
@@ -58,20 +57,12 @@ export class FollowService implements Service {
     userToUnfollow: User,
   ): Promise<[followerCount: number, followeeCount: number]> {
     // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    // await new Promise((f) => setTimeout(f, 2000));
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(
-      authToken,
-      userToUnfollow,
-    );
-    const followeeCount = await this.getFolloweeCount(
-      authToken,
-      userToUnfollow,
-    );
-
-    return [followerCount, followeeCount];
+    return this.serverFacade.unfollow({
+      token: authToken.token,
+      targetUser: userToUnfollow.dto,
+    });
   }
 
   public async getIsFollowerStatus(

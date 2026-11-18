@@ -1,4 +1,6 @@
 import {
+  FollowActionRequest,
+  FollowActionResponse,
   FollowCountRequest,
   FollowCountResponse,
   IsFollowerRequest,
@@ -120,6 +122,54 @@ export class ServerFacade {
         throw new Error(`Couldn't find out if following`);
       } else {
         return response.isFollower;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async follow(
+    request: FollowActionRequest,
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const response = await this.clientCommunicator.doPost<
+      FollowActionRequest,
+      FollowActionResponse
+    >(request, "/follow");
+
+    // Handle errors
+    if (response.success) {
+      if (
+        typeof response.followerCount !== "number" ||
+        typeof response.followeeCount !== "number"
+      ) {
+        throw new Error(`the server did not return both counts`);
+      } else {
+        return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async unfollow(
+    request: FollowActionRequest,
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const response = await this.clientCommunicator.doPost<
+      FollowActionRequest,
+      FollowActionResponse
+    >(request, "/unfollow");
+
+    // Handle errors
+    if (response.success) {
+      if (
+        typeof response.followerCount !== "number" ||
+        typeof response.followeeCount !== "number"
+      ) {
+        throw new Error(`the server did not return both counts`);
+      } else {
+        return [response.followerCount, response.followeeCount];
       }
     } else {
       console.error(response);
