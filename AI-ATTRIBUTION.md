@@ -59,3 +59,21 @@
 - Tool: ChatGPT (Codex)
 - Task: Reviewed backend logout code and drafted SAM configuration, test requests, and frontend facade/service methods.
 - Review: Reviewed the changes and confirmed the browser request returned HTTP 200 with the expected response.
+
+## 2026-11-18: Get user by alias
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted request/response interfaces, Lambda and service examples, SAM configuration, IAM permission entry, and a test request. Reviewed my implementation.
+- Review: Reviewed the changes and tested the endpoint through the browser.
+
+## 2026-11-18: Post status
+
+- Tool: ChatGPT (Codex)
+- Task: Helped define StatusDto and PostStatusRequest, reviewed backend code, and drafted SAM configuration, an IAM permission entry, and a test request.
+- Review: Reviewed the changes and confirmed the browser request returned HTTP 200 with success.
+
+## 2026-11-18: Status DTO conversion
+
+- Tool: ChatGPT (Codex)
+- Task: Reviewed DTO conversion methods and provided code for the dto getter and null handling in fromDto.
+- Review: Reviewed the conversion code and tested posting a status through the browser.

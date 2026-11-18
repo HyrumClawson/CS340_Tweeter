@@ -13,6 +13,7 @@ import {
   LogoutRequest,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  PostStatusRequest,
   RegisterRequest,
   TweeterResponse,
   User,
@@ -260,6 +261,19 @@ export class ServerFacade {
         return user;
       }
     } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async postStatus(request: PostStatusRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      PostStatusRequest,
+      TweeterResponse
+    >(request, "/status/post");
+
+    // Handle errors
+    if (!response.success) {
       console.error(response);
       throw new Error(response.message ?? undefined);
     }
