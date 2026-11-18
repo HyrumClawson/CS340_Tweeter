@@ -60,8 +60,14 @@ export class FollowService implements Service {
 
     // TODO: Call the server
 
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
+    const followerCount = await this.getFollowerCount(
+      authToken.token,
+      userToFollow.dto,
+    );
+    const followeeCount = await this.getFolloweeCount(
+      authToken.token,
+      userToFollow.dto, //I've edited this while chanigng the count stuff
+    );
 
     return [followerCount, followeeCount];
   }
@@ -76,12 +82,12 @@ export class FollowService implements Service {
     // TODO: Call the server
 
     const followerCount = await this.getFollowerCount(
-      authToken,
-      userToUnfollow,
+      authToken.token,
+      userToUnfollow.dto,
     );
     const followeeCount = await this.getFolloweeCount(
-      authToken,
-      userToUnfollow,
+      authToken.token,
+      userToUnfollow.dto,
     );
 
     return [followerCount, followeeCount];
@@ -95,18 +101,12 @@ export class FollowService implements Service {
     // TODO: Replace with the result of calling server
     return FakeData.instance.isFollower();
   }
-  public async getFolloweeCount(
-    authToken: AuthToken,
-    user: User,
-  ): Promise<number> {
+  public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getFolloweeCount(user.alias);
   }
 
-  public async getFollowerCount(
-    authToken: AuthToken,
-    user: User,
-  ): Promise<number> {
+  public async getFollowerCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getFollowerCount(user.alias);
   }
