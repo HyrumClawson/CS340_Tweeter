@@ -1,10 +1,10 @@
 import { TweeterRequest } from "./TweeterRequest";
 
 export interface RegisterRequest extends TweeterRequest {
-  firstName: string;
-  lastName: string;
-  alias: string;
-  password: string;
-  imageStringBase64: string;
-  imageFileExtension: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly alias: string;
+  readonly password: string;
+  readonly imageStringBase64: string;
+  readonly imageFileExtension: string;
 }
