@@ -29,7 +29,13 @@ export class FollowService implements Service {
     lastItem: User | null,
   ): Promise<[User[], boolean]> => {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    //return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    return this.serverFacade.getMoreFollowers({
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem?.dto ?? null,
+    });
   };
 
   public async follow(
