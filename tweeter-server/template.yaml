@@ -131,7 +131,33 @@ Resources:
           #
           # TODO: ADD MORE ENDPOINT DEFINITIONS HERE
           #
+          /followee/count: ##### TODO: Set endpoint URL
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### TODO: Set function name
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFolloweesCountFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
 
+          /follower/count: ##### TODO: Set endpoint URL
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### TODO: Set function name
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFollowersCountFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
   #
   # SQS Queues  (This will become relevant in Milestone 4. For M3, leave this section commented out.)
   #
@@ -195,6 +221,33 @@ Resources:
   #
   # TODO: ADD MORE WEB API LAMBDA DEFINITIONS HERE
   #
+  getFolloweesCountFunction: ##### TODO: Set function name
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFolloweesCountFunction ##### TODO: Set function name
+      Handler: lambda/follow/GetFolloweesCountLambda.handler ##### TODO: Set Handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followee/count ##### TODO: Set Path
+            Method: POST
+
+  getFollowersCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFollowersCountFunction
+      Handler: lambda/follow/GetFollowersCountLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /follower/count
+            Method: POST
 
   #
   # SQS Queue Lambda Functions  (This will become relevant in Milestone 4. For M3, leave this section commented out.)
