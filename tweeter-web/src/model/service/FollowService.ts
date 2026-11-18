@@ -87,7 +87,11 @@ export class FollowService implements Service {
     user: User,
   ): Promise<number> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    //return FakeData.instance.getFolloweeCount(user.alias);
+    return this.serverFacade.getFolloweesCount({
+      token: authToken.token,
+      user: user.dto,
+    });
   }
 
   public async getFollowerCount(
@@ -95,6 +99,10 @@ export class FollowService implements Service {
     user: User,
   ): Promise<number> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    //return FakeData.instance.getFollowerCount(user.alias);
+    return this.serverFacade.getFollowersCount({
+      token: authToken.token,
+      user: user.dto,
+    });
   }
 }
