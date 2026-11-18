@@ -114,19 +114,19 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          # /user/create: ##### TODO: Set endpoint URL
-          #   post:
-          #     consumes: *commonConsumes
-          #     produces: *commonProduces
-          #     x-amazon-apigateway-integration:
-          #       type: aws
-          #       httpMethod: POST
-          #       uri:
-          #         ##### TODO: Set function name
-          #         Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userCreateFunction.Arn}/invocations
-          #       requestTemplates: *commonRequestTemplates
-          #       responses: *commonAmazonResponses
-          #     responses: *commonSwaggerResponses
+          /follower/list: ##### TODO: Set endpoint URL
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### TODO: Set function name
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFollowersFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
 
           #
           # TODO: ADD MORE ENDPOINT DEFINITIONS HERE
@@ -178,19 +178,19 @@ Resources:
             Path: /followee/list
             Method: POST
 
-  # userCreateFunction: ##### TODO: Set function name
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     FunctionName: userCreateFunction ##### TODO: Set function name
-  #     Handler: handlers/users/UserCreateHandler.userCreateHandler ##### TODO: Set Handler
-  #     Policies: *commonPolicies
-  #     Events:
-  #       PostApi:
-  #         Type: Api
-  #         Properties:
-  #           RestApiId: !Ref tweeterApi
-  #           Path: /user/create ##### TODO: Set Path
-  #           Method: POST
+  getFollowersFunction: ##### TODO: Set function name
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFollowersFunction ##### TODO: Set function name
+      Handler: lambda/follow/GetFollowersLambda.handler ##### TODO: Set Handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /follower/list ##### TODO: Set Path
+            Method: POST
 
   #
   # TODO: ADD MORE WEB API LAMBDA DEFINITIONS HERE
