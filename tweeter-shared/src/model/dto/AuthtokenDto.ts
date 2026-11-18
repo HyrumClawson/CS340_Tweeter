@@ -1,4 +1,4 @@
-export interface AuthtokenDto {
+export interface AuthTokenDto {
   readonly token: string;
-  readonly timestamp: string;
+  readonly timestamp: number;
 }
