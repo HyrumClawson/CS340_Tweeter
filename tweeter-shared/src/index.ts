@@ -25,6 +25,7 @@ export type { FollowActionRequest } from "./model/net/request/FollowActionReques
 export type { LoginRequest } from "./model/net/request/LoginRequest";
 export type { RegisterRequest } from "./model/net/request/RegisterRequest";
 export type { LogoutRequest } from "./model/net/request/LogoutRequest";
+export type { GetUserRequest } from "./model/net/request/GetUserRequest";
 
 //
 //Responses
@@ -35,6 +36,7 @@ export type { FollowCountResponse } from "./model/net/response/FollowCountRespon
 export type { IsFollowerResponse } from "./model/net/response/IsFollowerResponse";
 export type { FollowActionResponse } from "./model/net/response/FollowActionResponse";
 export type { AuthResponse } from "./model/net/response/AuthResponse";
+export type { GetUserResponse } from "./model/net/response/GetUserResponse";
 //
 //other
 //

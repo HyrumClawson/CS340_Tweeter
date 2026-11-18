@@ -8,9 +8,11 @@ import {
   IsFollowerRequest,
   IsFollowerResponse,
   LoginRequest,
+  LogoutRequest,
   PagedUserItemRequest,
   PagedUserItemResponse,
   RegisterRequest,
+  TweeterResponse,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -222,6 +224,19 @@ export class ServerFacade {
         return [user, authToken];
       }
     } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async logout(request: LogoutRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      LogoutRequest,
+      TweeterResponse
+    >(request, "/user/logout");
+
+    // Handle errors
+    if (!response.success) {
       console.error(response);
       throw new Error(response.message ?? undefined);
     }

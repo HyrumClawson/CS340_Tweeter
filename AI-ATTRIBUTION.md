@@ -23,3 +23,39 @@
 - Tool: ChatGPT
 - Task: Helped identify tracked SAM build files and dependencies and suggested how to remove them from the unpushed commits.
 - Review: I confirmed the generated files were tracked and the commits were still local.
+
+## 2026-11-17: Follower and followee counts
+
+- Tool: ChatGPT (Codex)
+- Task: Helped review request/response types, Lambdas, and frontend wiring. Drafted SAM configuration and test requests.
+- Review: Reviewed the changes and tested both count endpoints in AWS and the browser.
+
+## 2026-11-18: Is-follower status
+
+- Tool: ChatGPT (Codex)
+- Task: Helped review the boolean response and Lambda, and drafted SAM configuration and a test request.
+- Review: Reviewed the changes and tested the endpoint through the browser.
+
+## 2026-11-18: Follow and unfollow
+
+- Tool: ChatGPT (Codex)
+- Task: Helped review request/response types, Lambdas, and frontend handling of returned counts. Drafted SAM configuration and test requests.
+- Review: Reviewed the changes and tested both operations in AWS and the browser.
+
+## 2026-11-18: Login endpoint
+
+- Tool: ChatGPT (Codex)
+- Task: Helped review login code, draft SAM configuration, and troubleshoot the frontend request URL.
+- Review: Reviewed the changes and tested login in Lambda, API Gateway, and the browser.
+
+## 2026-11-18: Registration endpoint
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted RegisterRequest and SAM configuration, explained Base64 image handling, and reviewed the Lambda and server service.
+- Review: Reviewed the changes and tested registration in the browser.
+
+## 2026-11-18: Logout endpoint
+
+- Tool: ChatGPT (Codex)
+- Task: Reviewed backend logout code and drafted SAM configuration, test requests, and frontend facade/service methods.
+- Review: Reviewed the changes and confirmed the browser request returned HTTP 200 with the expected response.

@@ -4,12 +4,10 @@ import { Service } from "./Service";
 import { AuthTokenDto } from "tweeter-shared/dist/model/dto/AuthTokenDto";
 
 export class UserService implements Service {
-  public async getUser(
-    authToken: AuthToken,
-    alias: string,
-  ): Promise<User | null> {
+  public async getUser(token: string, alias: string): Promise<UserDto | null> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    const user = FakeData.instance.findUserByAlias(alias);
+    return user === null ? null : user.dto;
   }
 
   public async login(
