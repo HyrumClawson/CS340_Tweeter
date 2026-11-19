@@ -89,3 +89,15 @@
 - Tool: ChatGPT (Codex)
 - Task: Identified missing React keys in App.tsx and provided keys to reset the scroller when switching tabs.
 - Review: Added the keys and confirmed feed and story called their respective endpoints.
+
+## 2026-11-18: Integration tests
+
+- Tool: ChatGPT (Codex)
+- Task: Reviewed Jest configuration and drafted integration tests for registration, followers, follower count, and successful story retrieval.
+- Review: Tested execution and reviewed. All four tests passed.
+
+## 2026-11-18: AI attribution log
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted summarized attribution entries describing AI assistance throughout milestone 3.
+- Review: I am responsible for checking each entry against the assistance used and work completed.
