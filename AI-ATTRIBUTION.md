@@ -77,3 +77,15 @@
 - Tool: ChatGPT (Codex)
 - Task: Reviewed DTO conversion methods and provided code for the dto getter and null handling in fromDto.
 - Review: Reviewed the conversion code and tested posting a status through the browser.
+
+## 2026-11-18: Feed and story endpoints
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted paged status interfaces, a shared fake-data helper, SAM configuration, IAM permission entries, and test requests. Reviewed Lambdas and frontend wiring and helped resolve a stale dependency layer.
+- Review: Reviewed the changes and tested both endpoints in AWS and the browser.
+
+## 2026-11-18: Feed and story navigation
+
+- Tool: ChatGPT (Codex)
+- Task: Identified missing React keys in App.tsx and provided keys to reset the scroller when switching tabs.
+- Review: Added the keys and confirmed feed and story called their respective endpoints.

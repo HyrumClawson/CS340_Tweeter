@@ -11,10 +11,13 @@ import {
   IsFollowerResponse,
   LoginRequest,
   LogoutRequest,
+  PagedStatusItemRequest,
+  PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   PostStatusRequest,
   RegisterRequest,
+  Status,
   TweeterResponse,
   User,
   UserDto,
@@ -258,7 +261,7 @@ export class ServerFacade {
       if (user === null) {
         throw new Error(`invalid user alias`);
       } else {
-        return user;
+        return User.fromDto(response.user);
       }
     } else {
       console.error(response);
@@ -274,6 +277,60 @@ export class ServerFacade {
 
     // Handle errors
     if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getStory(
+    request: PagedStatusItemRequest,
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedStatusItemRequest,
+      PagedStatusItemResponse
+    >(request, "/story/list");
+
+    // Convert the StatusDto array returned by ClientCommunicator to a Status array
+    const items: Status[] | null =
+      response.success && response.items
+        ? response.items.map((dto) => Status.fromDto(dto) as Status)
+        : null;
+
+    // Handle errors
+    if (response.success) {
+      if (items == null) {
+        throw new Error(`No stories were found`);
+      } else {
+        return [items, response.hasMore];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+  public async getFeed(
+    request: PagedStatusItemRequest,
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedStatusItemRequest,
+      PagedStatusItemResponse
+    >(request, "/feed/list");
+
+    // Convert the StatusDto array returned by ClientCommunicator to a Status array
+    const items: Status[] | null =
+      response.success && response.items
+        ? response.items.map((dto) => Status.fromDto(dto) as Status)
+        : null;
+
+    // Handle errors
+    if (response.success) {
+      if (items == null) {
+        throw new Error(`No feed was found`);
+      } else {
+        return [items, response.hasMore];
+      }
+    } else {
       console.error(response);
       throw new Error(response.message ?? undefined);
     }

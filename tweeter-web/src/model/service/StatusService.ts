@@ -12,7 +12,13 @@ export class StatusService implements Service {
     lastItem: Status | null,
   ): Promise<[Status[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    //return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.serverFacade.getStory({
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem?.dto ?? null,
+    });
   }
 
   public async loadMoreFeedItems(
@@ -22,7 +28,13 @@ export class StatusService implements Service {
     lastItem: Status | null,
   ): Promise<[Status[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    //return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.serverFacade.getFeed({
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem?.dto ?? null,
+    });
   }
 
   public async postStatus(
