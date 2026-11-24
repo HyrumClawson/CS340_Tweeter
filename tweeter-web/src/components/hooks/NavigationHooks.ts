@@ -26,7 +26,12 @@ export const useUserNavigation = (featurePath: string) => {
 
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
-    const alias = presenterRef.current!.extractAlias(event.target.toString());
+    //const alias = presenterRef.current!.extractAlias(event.target.toString());
+    //added in the hopes that my stupid decision to forget @ this will wokr
+    const link = event.currentTarget as HTMLAnchorElement;
+    const path = new URL(link.href).pathname;
+    const alias = decodeURIComponent(path.substring(path.lastIndexOf("/") + 1));
+    //end of the added code
     presenterRef.current!.navigateToUser(
       authToken,
       displayedUser,

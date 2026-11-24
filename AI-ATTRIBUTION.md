@@ -198,7 +198,7 @@
 
 - Tool: ChatGPT (Codex)
 - Task: Helped implement my idea to share database pagination in a parent class. Drafted the generic paging method and showed me how to call it from `DynamoFollowDAO`.
-- Review: I updated `DynamoFollowDAO` myself. I checked that it still selects the query direction and maps rows to aliases, while the parent handles the cursor and `hasMore`. I verified the Followees list with a real relationship.
+- Review: I updated DynamoFollowDAO myself. I checked that it still selects the query direction and maps rows to aliases, while the parent handles the cursor and hasMore. I verified the Followees list with a real relationship.
 
 ## 2026-11-24: tweeter-server/src/model/service/FollowService.ts
 
@@ -216,28 +216,52 @@
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted the DAO interface and DynamoDB implementation for stored stories and feeds. Reused the shared paging parent and explained the timeline keys, newest-first ordering, and batch-write retries.
-- Review: Pending. I still need to review and compile these files and verify them once the status service is wired in.
+- Review: Pending. I still need to review and compile these files and verify them once the status service is wired in. Everything seems to be working just fine.
 
 ## 2026-11-24: tweeter-server/src/model/dao/StatusDAO.ts (new file), tweeter-server/src/storage/DynamoStatusDAO.ts (new file)
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted the DAO interface and DynamoDB implementation for stories and feeds. Reused `DynamoPagedDAO` and explained the timeline keys, newest-first ordering, and batch-write retries.
-- Review: I went through why the status rows store the full `StatusDto` and why the follow rows store aliases. I wired the status DAO into `services.ts`. I still need to verify status reads and writes after deployment.
+- Review: I went through why the status rows store the full StatusDto and why the follow rows store aliases. I wired the status DAO into services.ts. I still need to verify status reads and writes after deployment.
 
 ## 2026-11-24: tweeter-server/src/model/service/StatusService.ts
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted the shared story/feed loading helper and `postStatus()`. Explained how the service uses the authenticated author’s profile and pages through followers to save a copy of the post in each feed.
-- Review: I walked through the posting code and checked why it keeps the submitted text and timestamp but uses the server-verified author profile. I also checked how the last follower alias becomes the cursor for the next page and confirmed that the new `loadMore()` helper replaces `getStatusPage()`.
+- Review: I walked through the posting code and checked why it keeps the submitted text and timestamp but uses the server-verified author profile. I also checked how the last follower alias becomes the cursor for the next page and confirmed that the new loadMore() helper replaces getStatusPage().
 
 ## 2026-11-24: tweeter-server/src/services.ts
 
 - Tool: ChatGPT (Codex)
 - Task: Provided the status DAO and service wiring and reviewed the file I uploaded for the imports, environment-variable name, and constructor arguments.
-- Review: I added the imports, created `DynamoStatusDAO` with the shared DynamoDB client, and exported the configured `statusService`. I uploaded the updated file for review.
+- Review: I added the imports, created DynamoStatusDAO with the shared DynamoDB client, and exported the configured statusService. I uploaded the updated file for review.
 
 ## 2026-11-24: tweeter-server/template.yaml, tweeter-server/src/lambda/status/GetStoryLambda.ts, tweeter-server/src/lambda/status/GetFeedLambda.ts, tweeter-server/src/lambda/status/PostStatusLambda.ts
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted the SAM configuration for `StatusesTable` and `STATUSES_TABLE`, and showed me how to switch the three status handlers to the configured `statusService`.
 - Review: I added the table and environment variable and switched the three handlers to use the configured service. I still need to rebuild, deploy, and test that a new post appears in the author’s story and a follower’s feed, and that scrolling loads the next page.
+
+## 2026-11-24: tweeter-server/src/storage/DynamoPagedDAO.ts (new file), tweeter-server/src/storage/DynamoFollowDAO.ts
+
+- Tool: ChatGPT (Codex)
+- Task: Helped implement my idea to share DynamoDB pagination in a parent class. Drafted the generic paging method and showed me how to call it from `DynamoFollowDAO`.
+- Review: I added the parent class and updated the follow DAO to use it. I tested pagination on hybe’s Followees tab. I scrolled to the bottom and saw one additional user load on the next page.
+
+## 2026-11-24: tweeter-server/src/model/dao/StatusDAO.ts (new file), tweeter-server/src/storage/DynamoStatusDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the status DAO interface and DynamoDB implementation. Explained how timeline keys separate stories from feeds and how the DAO reuses shared pagination.
+- Review: While debugging the feed, I queried the deployed statuses table in the DynamoDB console. I found seven rows under feed#hybe, which confirmed that the follower received stored copies even while the Feed tab was showing different posts.
+
+## 2026-11-24: tweeter-server/src/model/service/StatusService.ts
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the shared story/feed loading helper and `postStatus()`. Helped me trace a feed bug by comparing the DynamoDB rows with the `/feed/list` response.
+- Review: I checked why posting uses the authenticated author’s profile and how the loop pages through followers. In DevTools, I saw /feed/list return posts written by hybe even though the database held the expected feed rows. I found that loadMoreFeedItems() was passing "story" and changed it to "feed". I then posted as Taylor and confirmed the post appeared in Taylor’s Story and in hybe’s Feed after switching away and back.
+
+## 2026-11-24: tweeter-server/template.yaml, tweeter-server/src/lambda/status/GetStoryLambda.ts, tweeter-server/src/lambda/status/GetFeedLambda.ts, tweeter-server/src/lambda/status/PostStatusLambda.ts
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the SAM configuration for `StatusesTable` and `STATUSES_TABLE`, and showed me how to switch the three status handlers to the configured `statusService`.
+- Review: I added the table and environment variable, updated the handlers, and deployed. I verified the deployed flow by creating a post, finding it in the author’s Story, and confirming that it appeared in a follower’s Feed.

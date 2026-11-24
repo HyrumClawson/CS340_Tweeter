@@ -28,7 +28,7 @@ export class StatusService implements Service {
     pageSize: number,
     lastItem: StatusDto | null,
   ): Promise<[StatusDto[], boolean]> {
-    return this.loadMore(token, "story", userAlias, pageSize, lastItem);
+    return this.loadMore(token, "feed", userAlias, pageSize, lastItem);
   }
 
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
