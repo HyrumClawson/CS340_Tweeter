@@ -139,3 +139,15 @@
 - Tool: ChatGPT (Codex)
 - Task: Drafted the DynamoDB implementation of `SessionDAO` and identified the AWS SDK dependencies it needs. Explained why the interface lives under `model/dao` and the AWS implementation lives under `storage`.
 - Review: Understand how all the AWS database side DAOs will be in storage. Reviewed the implementation and looks good.
+
+## 2026-11-23: tweeter-server/src/storage/DynamoUserDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the DynamoDB implementation of `UserDAO` for looking up users by alias and creating user records. Explained how the conditional write prevents duplicate aliases and how the constructor receives the DynamoDB client and table name.
+- Review: Looked through the implementation and it looks like it should provide all the functionality the user service will need to have access to .
+
+## 2026-11-23: tweeter-server/src/model/dao/ImageDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the interface for uploading profile images and removing them if registration fails after upload. Compared the planned Base64 decoding and S3 upload flow with the Milestone 4A example.
+- Review: Went through and interface contains everything it should need for uploading an image correctly to the dynamoDb
