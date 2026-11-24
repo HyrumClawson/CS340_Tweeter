@@ -1,4 +1,4 @@
-import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
+import { UserDto } from "tweeter-shared";
 import { Service } from "./Service";
 import { FollowDAO } from "../dao/FollowDAO";
 import { UserDAO } from "../dao/UserDAO";
@@ -18,7 +18,7 @@ export class FollowService implements Service {
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> => {
     // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    return this.loadMore(token, userAlias, pageSize, lastItem, "followees");
   };
 
   loadMoreFollowers = async (
@@ -29,22 +29,8 @@ export class FollowService implements Service {
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> => {
     // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    return this.loadMore(token, userAlias, pageSize, lastItem, "followers");
   };
-
-  private async getFakeData(
-    lastItem: UserDto | null,
-    pageSize: number,
-    userAlias: string,
-  ): Promise<[UserDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(
-      User.fromDto(lastItem),
-      pageSize,
-      userAlias,
-    );
-    const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
-  }
 
   public async follow(
     token: string,
@@ -65,19 +51,15 @@ export class FollowService implements Service {
     user: UserDto,
     selectedUser: UserDto,
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    //return FakeData.instance.isFollower();
     const signedInAlias = await this.authorizationService.requireUser(token);
     return this.followDao.exists(signedInAlias, selectedUser.alias);
   }
 
   public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
-    // TODO: Replace with the result of calling server
     return this.getFollowCount(token, user.alias, "followeeCount");
   }
 
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
-    // TODO: Replace with the result of calling server
     return this.getFollowCount(token, user.alias, "followerCount");
   }
 
@@ -121,5 +103,34 @@ export class FollowService implements Service {
     }
 
     return user[field];
+  }
+
+  private async loadMore(
+    token: string,
+    userAlias: string,
+    pageSize: number,
+    lastItem: UserDto | null,
+    field: "followers" | "followees",
+  ): Promise<[UserDto[], boolean]> {
+    await this.authorizationService.requireUser(token);
+    const [aliases, hasMore] = await this.followDao.page(
+      userAlias,
+      field,
+      pageSize,
+      lastItem?.alias,
+    );
+    const users = await Promise.all(
+      aliases.map((alias) => this.userDao.find(alias)),
+    );
+    const userDtos = users.map((user) => {
+      if (user === null) {
+        throw new Error(
+          "internal-server-error: Follow relationship references a missing user",
+        );
+      }
+      return user.profile;
+    });
+
+    return [userDtos, hasMore];
   }
 }
