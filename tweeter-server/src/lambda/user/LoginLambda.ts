@@ -1,8 +1,7 @@
 import { AuthResponse, LoginRequest } from "tweeter-shared";
-import { UserService } from "../../model/service/UserService";
+import { userService } from "../../services";
 
 export const handler = async (request: LoginRequest): Promise<AuthResponse> => {
-  const userService = new UserService();
   const [user, authToken] = await userService.login(
     request.alias,
     request.password,

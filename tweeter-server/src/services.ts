@@ -1,0 +1,47 @@
+// AI-assisted: see AI-ATTRIBUTION.md
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { S3Client } from "@aws-sdk/client-s3";
+
+import { AuthorizationService } from "./model/service/AuthorizationService";
+import { UserService } from "./model/service/UserService";
+import { DynamoSessionDAO } from "./storage/DynamoSessionDAO";
+import { DynamoUserDAO } from "./storage/DynamoUserDAO";
+import { S3ImageDAO } from "./storage/S3ImageDAO";
+
+function getRequiredEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing environment variable: ${name}`);
+  }
+  return value;
+}
+
+const region = getRequiredEnv("AWS_REGION");
+const dynamoClient = DynamoDBDocumentClient.from(
+  new DynamoDBClient({ region }),
+);
+const s3Client = new S3Client({ region });
+
+const userDao = new DynamoUserDAO(dynamoClient, getRequiredEnv("USERS_TABLE"));
+const sessionDao = new DynamoSessionDAO(
+  dynamoClient,
+  getRequiredEnv("SESSIONS_TABLE"),
+);
+const imageDao = new S3ImageDAO(
+  s3Client,
+  getRequiredEnv("PROFILE_IMAGES_BUCKET"),
+  region,
+);
+
+const idleTimeoutMs = 30 * 60 * 1000;
+const authorizationService = new AuthorizationService(
+  sessionDao,
+  idleTimeoutMs,
+);
+
+export const userService = new UserService(
+  userDao,
+  imageDao,
+  authorizationService,
+);

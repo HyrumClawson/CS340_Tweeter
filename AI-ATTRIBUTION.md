@@ -151,3 +151,21 @@
 - Tool: ChatGPT (Codex)
 - Task: Drafted the interface for uploading profile images and removing them if registration fails after upload. Compared the planned Base64 decoding and S3 upload flow with the Milestone 4A example.
 - Review: Went through and interface contains everything it should need for uploading an image correctly to the dynamoDb
+
+## 2026-11-23: tweeter-server/src/storage/S3ImageDAO.ts (new file), tweeter-server/package.json, tweeter-server/package-lock.json
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the S3 implementation of `ImageDAO` and gave the command to install `@aws-sdk/client-s3`. The DAO uploads profile images, returns their URLs, and supports deleting an upload if registration needs to clean it up. Discussed using a bucket policy to grant browser read access to profile photos.
+- Review: TODO
+
+## 2026-11-23: tweeter-server/src/model/service/UserService.ts, tweeter-server/package.json, tweeter-server/package-lock.json
+
+- Tool: ChatGPT (Codex)
+- Task: Guided me as I rewrote `UserService` to use constructor injection and replaced its fake data. Provided the bcrypt password comparison, logout method, and image format helper. Reviewed my login, profile lookup, and registration code and identified fixes to the alias check, image cleanup, and returned session token.
+- Review: TODO
+
+## 2026-11-23: tweeter-server/src/services.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the wiring module that creates the AWS clients and concrete DAOs, injects the session DAO into `AuthorizationService`, and exports a configured `UserService`. The module reads resource names from environment variables and sets a 30-minute inactivity timeout.
+- Review: TODO
