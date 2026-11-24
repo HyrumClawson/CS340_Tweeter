@@ -1,5 +1,4 @@
 import { LogoutRequest, TweeterResponse } from "tweeter-shared";
-import { UserService } from "../../model/service/UserService";
 import { userService } from "../../services";
 
 export const handler = async (
