@@ -30,18 +30,6 @@ export class StatusService implements Service {
   ): Promise<[StatusDto[], boolean]> {
     return this.loadMore(token, "story", userAlias, pageSize, lastItem);
   }
-  // private getStatusPage(
-  //   pageSize: number,
-  //   lastItem: StatusDto | null,
-  // ): [StatusDto[], boolean] {
-  //   const lastStatus = Status.fromDto(lastItem);
-  //   const [statuses, hasMore] = FakeData.instance.getPageOfStatuses(
-  //     lastStatus,
-  //     pageSize,
-  //   );
-
-  //   return [statuses.map((status) => status.dto), hasMore];
-  // }
 
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
     const authorAlias = await this.authorizationService.requireUser(token);
@@ -50,7 +38,8 @@ export class StatusService implements Service {
     if (author === null) {
       throw new Error("unauthorized: User no longer exists");
     }
-
+    //check if the post is actually a string, not just whitespace, if the timestamp is actually a number
+    //and that it's not less than zero.
     if (
       typeof newStatus?.post !== "string" ||
       !newStatus.post.trim() ||
@@ -65,7 +54,7 @@ export class StatusService implements Service {
       user: author.profile,
       timestamp: newStatus.timestamp,
     };
-
+    //update the author's story with the new status
     await this.statusDao.save("story", [authorAlias], status);
 
     let lastAlias: string | undefined;
