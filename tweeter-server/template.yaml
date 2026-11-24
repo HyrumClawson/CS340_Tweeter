@@ -19,6 +19,7 @@ Globals:
         SESSIONS_TABLE: !Ref SessionsTable
         PROFILE_IMAGES_BUCKET: !Ref ProfileImagesBucket
         FOLLOWS_TABLE: !Ref FollowsTable
+        STATUSES_TABLE: !Ref StatusesTable
 #
 # Reusable blocks of configuration. These are referenced throughout the template to avoid duplication.
 # &identifier is used to define a reusable block, and *identifier is used to reference it.
