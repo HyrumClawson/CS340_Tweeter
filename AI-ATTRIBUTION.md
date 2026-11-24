@@ -100,4 +100,12 @@
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted summarized attribution entries describing AI assistance throughout milestone 3.
-- Review: I am responsible for checking each entry against the assistance used and work completed.
+- Review: I went through and reviewed all that the AI model gave me.
+
+## Milestone 3 — ChatGPT attribution
+
+- **API implementation and pass-off prep:** I used ChatGPT to review how my client, API Gateway, Lambda handlers, and server services work together. It helped me check how login returns an authentication token, how later requests pass that token to the server, and which endpoint configuration steps SAM already handles. It also helped me review error handling and prepare to explain my implementation at pass-off.
+- **UML sequence diagram:** ChatGPT traced the successful post-status flow through the source files I shared and drafted the sequence diagram PDF. The diagram follows the request from `PostStatus.submitPost()` through the client and AWS layers to the success message on the component listener.
+- **API documentation:** ChatGPT drafted short descriptions for all 14 POST endpoints and walked me through publishing the documentation to `prod` and exporting Swagger with API Gateway extensions. I entered the descriptions in API Gateway and exported the YAML.
+- **Swagger review:** ChatGPT reviewed both exports, identified five blank or incorrect descriptions in the first one, and confirmed that I corrected all five in the second. It also checked that all 14 POST endpoints had `200`, `400`, and `500` integration mappings and flagged a typo in the `/followee/list` description.
+- Review: I checked the UML sequence diagram chatgpt generated. Everything else seems in order as well.
