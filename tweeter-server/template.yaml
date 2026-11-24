@@ -682,6 +682,24 @@ Resources:
             ReadCapacityUnits: 5
             WriteCapacityUnits: 5
 
+  StatusesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: timelineKey
+          AttributeType: S
+        - AttributeName: statusKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: timelineKey
+          KeyType: HASH
+        - AttributeName: statusKey
+          KeyType: RANGE
+
   ProfileImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
