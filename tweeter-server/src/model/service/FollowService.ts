@@ -46,51 +46,18 @@ export class FollowService implements Service {
     return [dtos, hasMore];
   }
 
-  // private createDto(user: User): UserDto {
-  //   return {
-  //     firstname: user.firstName,
-  //     lastname: user.lastName,
-  //     alias: user.alias,
-  //     imageUrl: user.imageUrl,
-  //   };
-  // }
-  // private getDomainObject(dto: UserDto | null): User | null {
-  //   return dto == null
-  //     ? null
-  //     : new User(dto.firstname, dto.lastname, dto.alias, dto.imageUrl);
-  // }
-
   public async follow(
     token: string,
     userToFollow: UserDto,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(token, userToFollow);
-    const followeeCount = await this.getFolloweeCount(
-      token,
-      userToFollow, //I've edited this while chanigng the count stuff
-    );
-
-    return [followerCount, followeeCount];
+    return await this.changeFollow(token, userToFollow.alias, true);
   }
 
   public async unfollow(
     token: string,
     userToUnfollow: UserDto,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(token, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
-
-    return [followerCount, followeeCount];
+    return await this.changeFollow(token, userToUnfollow.alias, false);
   }
 
   public async getIsFollowerStatus(
@@ -99,16 +66,19 @@ export class FollowService implements Service {
     selectedUser: UserDto,
   ): Promise<boolean> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    //return FakeData.instance.isFollower();
+    const signedInAlias = await this.authorizationService.requireUser(token);
+    return this.followDao.exists(signedInAlias, selectedUser.alias);
   }
+
   public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    return this.getFollowCount(token, user.alias, "followeeCount");
   }
 
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    return this.getFollowCount(token, user.alias, "followerCount");
   }
 
   private async changeFollow(
@@ -117,8 +87,11 @@ export class FollowService implements Service {
     following: boolean,
   ): Promise<[number, number]> {
     const userAlias = await this.authorizationService.requireUser(token);
-    if (!userAlias || userAlias == targetAlias) {
-      throw new Error("Bad-Requeset"); //add more to this error
+    if (userAlias === targetAlias) {
+      throw new Error("bad-request: You cannot follow or unfollow yourself"); //add more to this error
+    }
+    if ((await this.userDao.find(targetAlias)) === null) {
+      throw new Error("bad-request: User not found");
     }
     const change = await this.followDao.change(
       userAlias,
@@ -126,9 +99,27 @@ export class FollowService implements Service {
       following,
     );
     if (!change) {
-      throw new Error("already in requested state");
+      throw new Error("bad-request: already in requested state");
     }
     const targetUser = await this.userDao.find(targetAlias);
-    return [targetUser?.followerCount, targetUser?.followeeCount];
+    if (targetUser === null) {
+      throw new Error("bad-request: User not found");
+    }
+    return [targetUser.followerCount, targetUser.followeeCount];
+  }
+
+  private async getFollowCount(
+    token: string,
+    alias: string,
+    field: "followerCount" | "followeeCount",
+  ): Promise<number> {
+    await this.authorizationService.requireUser(token);
+
+    const user = await this.userDao.find(alias);
+    if (user === null) {
+      throw new Error("bad-request: User not found");
+    }
+
+    return user[field];
   }
 }
