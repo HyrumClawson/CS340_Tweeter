@@ -47,10 +47,46 @@ export class StatusService implements Service {
   }
 
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const authorAlias = await this.authorizationService.requireUser(token);
+    const author = await this.userDao.find(authorAlias);
 
-    // TODO: Call the server to post the status
+    if (author === null) {
+      throw new Error("unauthorized: User no longer exists");
+    }
+
+    if (
+      typeof newStatus?.post !== "string" ||
+      !newStatus.post.trim() ||
+      !Number.isSafeInteger(newStatus.timestamp) ||
+      newStatus.timestamp <= 0
+    ) {
+      throw new Error("bad-request: Invalid status");
+    }
+
+    const status: StatusDto = {
+      post: newStatus.post,
+      user: author.profile,
+      timestamp: newStatus.timestamp,
+    };
+
+    await this.statusDao.save("story", [authorAlias], status);
+
+    let lastAlias: string | undefined;
+    let hasMore: boolean;
+
+    do {
+      const [followerAliases, more] = await this.followDao.page(
+        authorAlias,
+        "followers",
+        25,
+        lastAlias,
+      );
+
+      await this.statusDao.save("feed", followerAliases, status);
+
+      lastAlias = followerAliases.at(-1);
+      hasMore = more;
+    } while (hasMore);
   }
   private async loadMore(
     token: string,
