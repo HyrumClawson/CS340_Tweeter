@@ -8,6 +8,8 @@ import { UserService } from "./model/service/UserService";
 import { DynamoSessionDAO } from "./storage/DynamoSessionDAO";
 import { DynamoUserDAO } from "./storage/DynamoUserDAO";
 import { S3ImageDAO } from "./storage/S3ImageDAO";
+import { FollowService } from "./model/service/FollowService";
+import { DynamoFollowDAO } from "./storage/DynamoFollowDAO";
 
 function getRequiredEnv(name: string): string {
   const value = process.env[name];
@@ -43,5 +45,17 @@ const authorizationService = new AuthorizationService(
 export const userService = new UserService(
   userDao,
   imageDao,
+  authorizationService,
+);
+
+const followDao = new DynamoFollowDAO(
+  dynamoClient,
+  getRequiredEnv("FOLLOWS_TABLE"),
+  getRequiredEnv("USERS_TABLE"),
+);
+
+export const followService = new FollowService(
+  followDao,
+  userDao,
   authorizationService,
 );

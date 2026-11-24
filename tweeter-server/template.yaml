@@ -18,7 +18,7 @@ Globals:
         USERS_TABLE: !Ref UsersTable
         SESSIONS_TABLE: !Ref SessionsTable
         PROFILE_IMAGES_BUCKET: !Ref ProfileImagesBucket
-
+        FOLLOWS_TABLE: !Ref FollowsTable
 #
 # Reusable blocks of configuration. These are referenced throughout the template to avoid duplication.
 # &identifier is used to define a reusable block, and *identifier is used to reference it.
@@ -650,6 +650,36 @@ Resources:
       KeySchema:
         - AttributeName: tokenHash
           KeyType: HASH
+
+  FollowsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: follower_alias
+          AttributeType: S
+        - AttributeName: followee_alias
+          AttributeType: S
+      KeySchema:
+        - AttributeName: follower_alias
+          KeyType: HASH
+        - AttributeName: followee_alias
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: follow_index
+          KeySchema:
+            - AttributeName: followee_alias
+              KeyType: HASH
+            - AttributeName: follower_alias
+              KeyType: RANGE
+          Projection:
+            ProjectionType: KEYS_ONLY
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
 
   ProfileImagesBucket:
     Type: AWS::S3::Bucket
