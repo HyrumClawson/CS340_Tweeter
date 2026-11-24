@@ -13,6 +13,11 @@ Globals:
       - !Ref tweeterLayer
     Timeout: 30
     MemorySize: 128
+    Environment:
+      Variables:
+        USERS_TABLE: !Ref UsersTable
+        SESSIONS_TABLE: !Ref SessionsTable
+        PROFILE_IMAGES_BUCKET: !Ref ProfileImagesBucket
 
 #
 # Reusable blocks of configuration. These are referenced throughout the template to avoid duplication.
@@ -618,3 +623,54 @@ Resources:
   #
   # TODO: ADD MORE TABLE DEFINITIONS HERE
   #
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: alias
+          AttributeType: S
+      KeySchema:
+        - AttributeName: alias
+          KeyType: HASH
+
+  SessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: tokenHash
+          AttributeType: S
+      KeySchema:
+        - AttributeName: tokenHash
+          KeyType: HASH
+
+  ProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+
+  ProfileImagesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ProfileImagesBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "${ProfileImagesBucket.Arn}/profile-images/*"
