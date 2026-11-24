@@ -1,3 +1,4 @@
+// AI-assisted: see AI-ATTRIBUTION.md
 export interface SessionDAO {
   create(token: string, alias: string, expiresAt: number): Promise<void>;
 

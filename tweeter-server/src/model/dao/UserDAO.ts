@@ -1,3 +1,4 @@
+// AI-assisted: see AI-ATTRIBUTION.md
 import type { UserDto } from "tweeter-shared";
 
 export interface StoredUser {

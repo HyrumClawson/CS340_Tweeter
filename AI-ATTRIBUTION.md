@@ -109,3 +109,33 @@
 - **API documentation:** ChatGPT drafted short descriptions for all 14 POST endpoints and walked me through publishing the documentation to `prod` and exporting Swagger with API Gateway extensions. I entered the descriptions in API Gateway and exported the YAML.
 - **Swagger review:** ChatGPT reviewed both exports, identified five blank or incorrect descriptions in the first one, and confirmed that I corrected all five in the second. It also checked that all 14 POST endpoints had `200`, `400`, and `500` integration mappings and flagged a typo in the `/followee/list` description.
 - Review: I checked the UML sequence diagram chatgpt generated. Everything else seems in order as well.
+
+## 2026-11-23: tweeter-server/src/model/dao/UserDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the `UserDAO` interface for finding and creating users. Defined `StoredUser` so the password hash stays separate from the profile sent to the client.
+- Review: checked the interface and seems correct.
+
+## 2026-11-23: tweeter-server/src/model/dao/SessionDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the `SessionDAO` interface for creating, refreshing, and revoking sessions. Explained how an active session gets a new expiration after a protected request.
+- Review: Checked the interface and seems correct.
+
+## 2026-11-23: tweeter-server/src/model/service/AuthorizationService.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted `AuthorizationService` to issue tokens, check and refresh sessions, and handle logout. Explained how the constructor receives a `SessionDAO` implementation.
+- Review: checked the implementation and seems good.
+
+## 2026-11-23: tweeter-server/tsconfig.json, tweeter-server/package.json, tweeter-server/package-lock.json
+
+- Tool: ChatGPT (Codex)
+- Task: Helped resolve the `node:crypto` TypeScript error by suggesting `@types/node` and adding `node` to the server's TypeScript `types` setting.
+- Review: added node with the specifications to the .tsconfig file and issue has been resolved.
+
+## 2026-11-23: tweeter-server/src/storage/DynamoSessionDAO.ts (new file), tweeter-server/package.json, tweeter-server/package-lock.json
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the DynamoDB implementation of `SessionDAO` and identified the AWS SDK dependencies it needs. Explained why the interface lives under `model/dao` and the AWS implementation lives under `storage`.
+- Review: Understand how all the AWS database side DAOs will be in storage. Reviewed the implementation and looks good.

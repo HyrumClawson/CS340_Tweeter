@@ -1,3 +1,4 @@
+// AI-assisted: see AI-ATTRIBUTION.md
 import { randomUUID } from "node:crypto";
 import type { AuthTokenDto } from "tweeter-shared";
 import type { SessionDAO } from "../dao/SessionDAO";
