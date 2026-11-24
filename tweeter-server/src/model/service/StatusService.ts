@@ -1,4 +1,4 @@
-import { AuthToken, Status, FakeData, StatusDto } from "tweeter-shared";
+import { StatusDto } from "tweeter-shared";
 import { Service } from "./Service";
 import { StatusDAO, Timeline } from "../dao/StatusDAO";
 import { FollowDAO } from "../dao/FollowDAO";
@@ -19,8 +19,6 @@ export class StatusService implements Service {
     pageSize: number,
     lastItem: StatusDto | null,
   ): Promise<[StatusDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    //return this.getStatusPage(pageSize, lastItem); //FakeData.instance.getPageOfStatuses(lastItem, pageSize);
     return this.loadMore(token, "story", userAlias, pageSize, lastItem);
   }
 
@@ -30,21 +28,20 @@ export class StatusService implements Service {
     pageSize: number,
     lastItem: StatusDto | null,
   ): Promise<[StatusDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.loadMore(token, "story", userAlias, pageSize, lastItem); //this.getStatusPage(pageSize, lastItem); //FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.loadMore(token, "story", userAlias, pageSize, lastItem);
   }
-  private getStatusPage(
-    pageSize: number,
-    lastItem: StatusDto | null,
-  ): [StatusDto[], boolean] {
-    const lastStatus = Status.fromDto(lastItem);
-    const [statuses, hasMore] = FakeData.instance.getPageOfStatuses(
-      lastStatus,
-      pageSize,
-    );
+  // private getStatusPage(
+  //   pageSize: number,
+  //   lastItem: StatusDto | null,
+  // ): [StatusDto[], boolean] {
+  //   const lastStatus = Status.fromDto(lastItem);
+  //   const [statuses, hasMore] = FakeData.instance.getPageOfStatuses(
+  //     lastStatus,
+  //     pageSize,
+  //   );
 
-    return [statuses.map((status) => status.dto), hasMore];
-  }
+  //   return [statuses.map((status) => status.dto), hasMore];
+  // }
 
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
     const authorAlias = await this.authorizationService.requireUser(token);
@@ -73,7 +70,7 @@ export class StatusService implements Service {
 
     let lastAlias: string | undefined;
     let hasMore: boolean;
-
+    //go and update the feeds of all the users who follow the author of the status post
     do {
       const [followerAliases, more] = await this.followDao.page(
         authorAlias,
