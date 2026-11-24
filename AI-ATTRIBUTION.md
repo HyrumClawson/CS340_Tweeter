@@ -156,16 +156,64 @@
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted the S3 implementation of `ImageDAO` and gave the command to install `@aws-sdk/client-s3`. The DAO uploads profile images, returns their URLs, and supports deleting an upload if registration needs to clean it up. Discussed using a bucket policy to grant browser read access to profile photos.
-- Review: TODO
+- Review: reviewed the interface and used the suggested commands to install the required dependencies
 
 ## 2026-11-23: tweeter-server/src/model/service/UserService.ts, tweeter-server/package.json, tweeter-server/package-lock.json
 
 - Tool: ChatGPT (Codex)
 - Task: Guided me as I rewrote `UserService` to use constructor injection and replaced its fake data. Provided the bcrypt password comparison, logout method, and image format helper. Reviewed my login, profile lookup, and registration code and identified fixes to the alias check, image cleanup, and returned session token.
-- Review: TODO
+- Review: Utilized codex to catch errors in my refactoring of the UserService class.
 
 ## 2026-11-23: tweeter-server/src/services.ts (new file)
 
 - Tool: ChatGPT (Codex)
 - Task: Drafted the wiring module that creates the AWS clients and concrete DAOs, injects the session DAO into `AuthorizationService`, and exports a configured `UserService`. The module reads resource names from environment variables and sets a 30-minute inactivity timeout.
-- Review: TODO
+- Review: Reviewed the implementation. It looks good.
+
+## 2026-11-23: tweeter-server/src/lambda/user/LoginLambda.ts, RegisterLambda.ts, GetUserLambda.ts, LogoutLambda.ts
+
+- Tool: ChatGPT (Codex)
+- Task: Showed me how to replace each handler’s `new UserService()` call with an import of the configured `userService` from `services.ts`.
+- Review: I updated the four handlers myself. After deploying, I verified that registration and login worked. I also checked DevTools and confirmed that a wrong password returned HTTP 400 with the expected error message.
+
+## 2026-11-23: tweeter-server/template.yaml
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the SAM resources for the users and sessions tables, the S3 profile-image bucket, and its read policy. Explained how `!Ref` passes the deployed resource names to the Lambdas as environment variables.
+- Review: I added the YAML myself and checked where it belonged in the template. After deploying, I registered test users and saw their profile photos load in the app.
+
+## 2026-11-23: Lambda layer and deployment permissions
+
+- Tool: ChatGPT (Codex)
+- Task: Gave me commands to package `bcryptjs` and the AWS SDK packages in the Lambda layer. Helped diagnose the `s3:CreateBucket` error, drafted a bucket-scoped IAM policy, and explained how to attach it as a customer-managed policy when the inline policy limit blocked me.
+- Review: I built and deployed the project myself. I applied the IAM fix, retried the deploy, and confirmed it succeeded.
+
+## 2026-11-24: tweeter-server/src/model/dao/FollowDAO.ts (new file), tweeter-server/src/storage/DynamoFollowDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the follow DAO interface and its DynamoDB implementation. Explained how a transaction changes the relationship and both users’ counts together, and how the reverse index supports the Followers list.
+- Review: I added the DAO files and verified follow and unfollow in the deployed app. I saw the followee count update and the test user appear in the Followees tab.
+
+## 2026-11-24: tweeter-server/src/storage/DynamoPagedDAO.ts (new file), tweeter-server/src/storage/DynamoFollowDAO.ts
+
+- Tool: ChatGPT (Codex)
+- Task: Helped implement my idea to share database pagination in a parent class. Drafted the generic paging method and showed me how to call it from `DynamoFollowDAO`.
+- Review: I updated `DynamoFollowDAO` myself. I checked that it still selects the query direction and maps rows to aliases, while the parent handles the cursor and `hasMore`. I verified the Followees list with a real relationship.
+
+## 2026-11-24: tweeter-server/src/model/service/FollowService.ts
+
+- Tool: ChatGPT (Codex)
+- Task: Guided and reviewed my constructor, shared follow/unfollow helper, and paging methods. Helped me correct the follow/unfollow booleans and the `Promise.all()` and null-handling code. Provided the relationship-status method and shared count helper.
+- Review: I wrote the constructor, follow/unfollow helper, and paging methods, then fixed issues from the review. I checked the difference between the signed-in alias and the profile alias being viewed. I tested follow and unfollow through the deployed UI.
+
+## 2026-11-24: tweeter-server/src/services.ts, tweeter-server/template.yaml, follow handlers under tweeter-server/src/lambda/follow/
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the wiring for `followService` and the SAM configuration for `FollowsTable` and `follow_index`. Showed me how to update the handlers to import the configured service.
+- Review: I added the wiring, table configuration, and handler imports myself. I deployed successfully. I used the profile URL and DevTools to troubleshoot a user lookup, then confirmed the follow and unfollow flow worked with registered accounts.
+
+## 2026-11-24: tweeter-server/src/model/dao/StatusDAO.ts (new file), tweeter-server/src/storage/DynamoStatusDAO.ts (new file)
+
+- Tool: ChatGPT (Codex)
+- Task: Drafted the DAO interface and DynamoDB implementation for stored stories and feeds. Reused the shared paging parent and explained the timeline keys, newest-first ordering, and batch-write retries.
+- Review: Pending. I still need to review and compile these files and verify them once the status service is wired in.
