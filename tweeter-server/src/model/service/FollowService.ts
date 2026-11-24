@@ -1,7 +1,16 @@
 import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
 import { Service } from "./Service";
+import { FollowDAO } from "../dao/FollowDAO";
+import { UserDAO } from "../dao/UserDAO";
+import { AuthorizationService } from "./AuthorizationService";
 
 export class FollowService implements Service {
+  public constructor(
+    private readonly followDao: FollowDAO,
+    private readonly userDao: UserDAO,
+    private readonly authorizationService: AuthorizationService,
+  ) {}
+
   loadMoreFollowees = async (
     token: string,
     userAlias: string,
@@ -100,5 +109,26 @@ export class FollowService implements Service {
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getFollowerCount(user.alias);
+  }
+
+  private async changeFollow(
+    token: string,
+    targetAlias: string,
+    following: boolean,
+  ): Promise<[number, number]> {
+    const userAlias = await this.authorizationService.requireUser(token);
+    if (!userAlias || userAlias == targetAlias) {
+      throw new Error("Bad-Requeset"); //add more to this error
+    }
+    const change = await this.followDao.change(
+      userAlias,
+      targetAlias,
+      following,
+    );
+    if (!change) {
+      throw new Error("already in requested state");
+    }
+    const targetUser = await this.userDao.find(targetAlias);
+    return [targetUser?.followerCount, targetUser?.followeeCount];
   }
 }
